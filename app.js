@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const mainRouter = require("./routes/index");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -10,6 +11,17 @@ mongoose
     console.log("Connected to DB");
   })
   .catch(console.error);
+
+app.use(express.json());
+app.use("/", mainRouter);
+
+// Temporary middleware to simulate authenticated owner
+app.use((req, res, next) => {
+  req.user = {
+    _id: "68bd7a27b1571d3e74508d1f",
+  };
+  next();
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
