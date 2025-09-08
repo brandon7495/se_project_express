@@ -1,7 +1,7 @@
-const Item = require("../models/Item");
+const ClothingItem = require("../models/clothingItem");
 
-const getItems = (req, res) => {
-  Item.find({})
+const getClothingItems = (req, res) => {
+  ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((error) => {
       console.error(error);
@@ -9,12 +9,12 @@ const getItems = (req, res) => {
     });
 };
 
-const createItem = (req, res) => {
+const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
   console.log(req.user._id); // Temporary log to verify owner
 
-  Item.create({ name, weather, imageUrl, owner: req.user._id })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((error) => {
       console.error(error);
@@ -25,10 +25,10 @@ const createItem = (req, res) => {
     });
 };
 
-const getItem = (req, res) => {
+const getClothingItem = (req, res) => {
   const { itemId } = req.params;
 
-  Item.findById(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((error) => {
@@ -42,4 +42,70 @@ const getItem = (req, res) => {
     });
 };
 
-module.exports = { getItems, createItem, getItem };
+const likeClothingItem = (req, res) => {
+  const { itemId } = req.params;
+
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((error) => {
+      console.error(error);
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      } else if (error.name === "CastError") {
+        return res.status(400).send({ message: "Invalid item ID" });
+      }
+      return res.status(500).send({ message: error.message });
+    });
+};
+
+const unlikeClothingItem = (req, res) => {
+  const { itemId } = req.params;
+
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((error) => {
+      console.error(error);
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      } else if (error.name === "CastError") {
+        return res.status(400).send({ message: "Invalid item ID" });
+      }
+      return res.status(500).send({ message: error.message });
+    });
+};
+
+const deleteClothingItem = (req, res) => {
+  const { itemId } = req.params;
+
+  ClothingItem.findByIdAndDelete(itemId)
+    .orFail()
+    .then((item) => res.status(200).send({ message: "Item deleted", item }))
+    .catch((error) => {
+      console.error(error);
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      } else if (error.name === "CastError") {
+        return res.status(400).send({ message: "Invalid item ID" });
+      }
+      return res.status(500).send({ message: error.message });
+    });
+};
+
+module.exports = {
+  getClothingItems,
+  createClothingItem,
+  getClothingItem,
+  likeClothingItem,
+  unlikeClothingItem,
+  deleteClothingItem,
+};
