@@ -1,5 +1,3 @@
-// How can I get access to the postman test suite for this sprint?
-
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
