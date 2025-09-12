@@ -12,7 +12,6 @@ mongoose
   })
   .catch(console.error);
 
-// Temporary middleware to simulate authenticated owner
 app.use((req, res, next) => {
   req.user = {
     _id: "68bd7a27b1571d3e74508d1f",

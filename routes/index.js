@@ -10,7 +10,7 @@ router.use("/items", clothingItemRouter);
 router.use((req, res) => {
   res
     .status(notFound.status)
-    .send({ message: "Requested Resource " + notFound.message });
+    .send({ message: `Requested Resource ${  notFound.message}` });
 });
 
 module.exports = router;

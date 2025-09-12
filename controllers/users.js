@@ -6,17 +6,6 @@ const {
   serverError,
 } = require("../utils/constants");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((error) => {
-      console.error(error);
-      return res
-        .status(serverError.status)
-        .send({ message: serverError.message });
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
 
@@ -27,7 +16,7 @@ const createUser = (req, res) => {
       if (error.name === "ValidationError") {
         return res
           .status(invalidUser.status)
-          .send({ message: invalidUser.message + " Data" });
+          .send({ message: `${invalidUser.message  } Data` });
       }
       return res
         .status(serverError.status)
@@ -46,11 +35,11 @@ const getUser = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res
           .status(notFound.status)
-          .send({ message: "User " + notFound.message });
-      } else if (error.name === "CastError") {
+          .send({ message: `User ${  notFound.message}` });
+      } if (error.name === "CastError") {
         return res
           .status(invalidUser.status)
-          .send({ message: invalidUser.message + " Id" });
+          .send({ message: `${invalidUser.message  } Id` });
       }
       return res
         .status(serverError.status)
@@ -58,4 +47,4 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+module.exports = { createUser, getUser };
