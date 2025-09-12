@@ -1,4 +1,4 @@
-const created = 201;
+const created = { status: 201 };
 const invalidUser = { status: 400, message: "Invalid User" };
 const invalidItem = { status: 400, message: "Invalid Item" };
 const notFound = { status: 404, message: "Not Found" };

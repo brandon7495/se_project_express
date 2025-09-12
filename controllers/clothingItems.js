@@ -27,7 +27,7 @@ const createClothingItem = (req, res) => {
       if (error.name === "ValidationError") {
         return res
           .status(invalidItem.status)
-          .send({ message: `${invalidItem.message  } Data` });
+          .send({ message: `${invalidItem.message} Data` });
       }
       return res
         .status(serverError.status)
@@ -46,11 +46,11 @@ const getClothingItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res
           .status(notFound.status)
-          .send({ message: `Item ${  notFound.message}` });
-      } if (error.name === "CastError") {
+          .send({ message: `Item ${notFound.message}` });
+      } else if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
-          .send({ message: `${invalidItem.message  } Id` });
+          .send({ message: `${invalidItem.message} Id` });
       }
       return res
         .status(serverError.status)
@@ -73,11 +73,11 @@ const likeClothingItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res
           .status(notFound.status)
-          .send({ message: `Item ${  notFound.message}` });
-      } if (error.name === "CastError") {
+          .send({ message: `Item ${notFound.message}` });
+      } else if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
-          .send({ message: `${invalidItem.message  } Id` });
+          .send({ message: `${invalidItem.message} Id` });
       }
       return res
         .status(serverError.status)
@@ -100,11 +100,11 @@ const unlikeClothingItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res
           .status(notFound.status)
-          .send({ message: `Item ${  notFound.message}` });
-      } if (error.name === "CastError") {
+          .send({ message: `Item ${notFound.message}` });
+      } else if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
-          .send({ message: `${invalidItem.message  } Id` });
+          .send({ message: `${invalidItem.message} Id` });
       }
       return res
         .status(serverError.status)
@@ -123,11 +123,11 @@ const deleteClothingItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res
           .status(notFound.status)
-          .send({ message: `Item ${  notFound.message}` });
-      } if (error.name === "CastError") {
+          .send({ message: `Item ${notFound.message}` });
+      } else if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
-          .send({ message: `${invalidItem.message  } Id` });
+          .send({ message: `${invalidItem.message} Id` });
       }
       return res
         .status(serverError.status)
