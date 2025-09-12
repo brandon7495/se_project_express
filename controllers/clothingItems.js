@@ -1,27 +1,37 @@
 const ClothingItem = require("../models/clothingItem");
+const {
+  created,
+  invalidItem,
+  notFound,
+  serverError,
+} = require("../utils/constants");
 
 const getClothingItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.send(items))
     .catch((error) => {
       console.error(error);
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
     });
 };
 
 const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  console.log(req.user._id); // Temporary log to verify owner
-
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
-    .then((item) => res.status(201).send(item))
+    .then((item) => res.status(created.status).send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return res.status(400).send({ message: error.message });
+        return res
+          .status(invalidItem.status)
+          .send({ message: invalidItem.message + " Data" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
     });
 };
 
@@ -30,15 +40,21 @@ const getClothingItem = (req, res) => {
 
   ClothingItem.findById(itemId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(notFound.status)
+          .send({ message: "Item " + notFound.message });
       } else if (error.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(invalidItem.status)
+          .send({ message: invalidItem.message + " Id" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
     });
 };
 
@@ -51,15 +67,21 @@ const likeClothingItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(notFound.status)
+          .send({ message: "Item " + notFound.message });
       } else if (error.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(invalidItem.status)
+          .send({ message: invalidItem.message + " Id" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
     });
 };
 
@@ -72,15 +94,21 @@ const unlikeClothingItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(notFound.status)
+          .send({ message: "Item " + notFound.message });
       } else if (error.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(invalidItem.status)
+          .send({ message: invalidItem.message + " Id" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
     });
 };
 
@@ -89,15 +117,21 @@ const deleteClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(200).send({ message: "Item deleted", item }))
+    .then((item) => res.send({ message: "Item deleted", item }))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(notFound.status)
+          .send({ message: "Item " + notFound.message });
       } else if (error.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(invalidItem.status)
+          .send({ message: invalidItem.message + " Id" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
     });
 };
 
