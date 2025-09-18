@@ -35,29 +35,6 @@ const createClothingItem = (req, res) => {
     });
 };
 
-const getClothingItem = (req, res) => {
-  const { itemId } = req.params;
-
-  ClothingItem.findById(itemId)
-    .orFail()
-    .then((item) => res.send(item))
-    .catch((error) => {
-      console.error(error);
-      if (error.name === "DocumentNotFoundError") {
-        return res
-          .status(notFound.status)
-          .send({ message: `Item ${notFound.message}` });
-      } else if (error.name === "CastError") {
-        return res
-          .status(invalidItem.status)
-          .send({ message: `${invalidItem.message} Id` });
-      }
-      return res
-        .status(serverError.status)
-        .send({ message: serverError.message });
-    });
-};
-
 const likeClothingItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -74,7 +51,8 @@ const likeClothingItem = (req, res) => {
         return res
           .status(notFound.status)
           .send({ message: `Item ${notFound.message}` });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
           .send({ message: `${invalidItem.message} Id` });
@@ -101,7 +79,8 @@ const unlikeClothingItem = (req, res) => {
         return res
           .status(notFound.status)
           .send({ message: `Item ${notFound.message}` });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
           .send({ message: `${invalidItem.message} Id` });
@@ -124,7 +103,8 @@ const deleteClothingItem = (req, res) => {
         return res
           .status(notFound.status)
           .send({ message: `Item ${notFound.message}` });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(invalidItem.status)
           .send({ message: `${invalidItem.message} Id` });
@@ -138,7 +118,6 @@ const deleteClothingItem = (req, res) => {
 module.exports = {
   getClothingItems,
   createClothingItem,
-  getClothingItem,
   likeClothingItem,
   unlikeClothingItem,
   deleteClothingItem,
