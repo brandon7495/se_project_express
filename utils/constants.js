@@ -1,6 +1,8 @@
 const created = { status: 201 };
 const invalidUser = { status: 400, message: "Invalid User" };
 const invalidItem = { status: 400, message: "Invalid Item" };
+const invalidEmail = { status: 401, message: "Invalid Email" };
+const invalidPassword = { status: 401, message: "Invalid Password" };
 const notFound = { status: 404, message: "Not Found" };
 const serverError = { status: 500, message: "Internal Server Error" };
 
@@ -8,6 +10,8 @@ module.exports = {
   created,
   invalidUser,
   invalidItem,
+  invalidEmail,
+  invalidPassword,
   notFound,
   serverError,
 };
