@@ -5,22 +5,38 @@ const {
   notFound,
   serverError,
 } = require("../utils/constants");
+const bcrypt = require("bcryptjs");
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
-    .then((user) => res.status(created.status).send(user))
-    .catch((error) => {
-      console.error(error);
-      if (error.name === "ValidationError") {
-        return res
-          .status(invalidUser.status)
-          .send({ message: `${invalidUser.message} Data` });
-      }
+  bcrypt
+    .hash(password, 10)
+    .then((hashedPassword) => {
+      User.create({ name, avatar, email, password: hashedPassword })
+        .then((user) => res.status(created.status).send(user))
+        .catch((error) => {
+          console.error(error);
+          if (error.name === "ValidationError") {
+            return res
+              .status(invalidUser.status)
+              .send({ message: `${invalidUser.message} Data` });
+          }
+          if (error.code === 11000) {
+            return res
+              .status(invalidUser.status)
+              .send({ message: "User with this email already exists" });
+          }
+          return res
+            .status(serverError.status)
+            .send({ message: serverError.message });
+        });
+    })
+    .catch((err) => {
+      console.error(err);
       return res
         .status(serverError.status)
-        .send({ message: serverError.message });
+        .send({ message: "Error hashing password." });
     });
 };
 
@@ -36,7 +52,8 @@ const getUser = (req, res) => {
         return res
           .status(notFound.status)
           .send({ message: `User ${notFound.message}` });
-      } if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(invalidUser.status)
           .send({ message: `${invalidUser.message} Id` });
