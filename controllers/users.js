@@ -2,8 +2,7 @@ const User = require("../models/user");
 const {
   created,
   invalidUser,
-  invalidEmail,
-  invalidPassword,
+  invalidEmailOrPassword,
   notFound,
   serverError,
 } = require("../utils/constants");
@@ -18,7 +17,14 @@ const createUser = (req, res) => {
     .hash(password, 10)
     .then((hashedPassword) => {
       User.create({ name, avatar, email, password: hashedPassword })
-        .then((user) => res.status(created.status).send(user))
+        .then((user) => {
+          res.status(created.status).send({
+            _id: user._id,
+            name: user.name,
+            avatar: user.avatar,
+            email: user.email,
+          });
+        })
         .catch((error) => {
           console.error(error);
           if (error.name === "ValidationError") {
@@ -44,12 +50,19 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
 
   User.findById(userId)
     .orFail()
-    .then((user) => res.send(user))
+    .then((user) =>
+      res.send({
+        _id: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      })
+    )
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
@@ -68,7 +81,7 @@ const getUser = (req, res) => {
     });
 };
 
-const loginUser = (req, res) => {
+const signinUser = (req, res) => {
   const { email, password } = req.body;
 
   User.findByCredentials(email, password)
@@ -80,15 +93,10 @@ const loginUser = (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      if (error.message === "Invalid email") {
+      if (error.message === invalidEmailOrPassword.message) {
         return res
-          .status(invalidEmail.status)
-          .send({ message: invalidEmail.message });
-      }
-      if (error.message === "Invalid password") {
-        return res
-          .status(invalidPassword.status)
-          .send({ message: invalidPassword.message });
+          .status(invalidEmailOrPassword.status)
+          .send({ message: invalidEmailOrPassword.message });
       }
       return res
         .status(serverError.status)
@@ -96,4 +104,4 @@ const loginUser = (req, res) => {
     });
 };
 
-module.exports = { createUser, getUser, loginUser };
+module.exports = { createUser, getCurrentUser, signinUser };

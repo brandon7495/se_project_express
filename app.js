@@ -10,13 +10,6 @@ mongoose
   .then()
   .catch(console.error);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68bd7a27b1571d3e74508d1f",
-  };
-  next();
-});
-
 app.use(express.json());
 app.use("/", mainRouter);
 
