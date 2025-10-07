@@ -13,6 +13,4 @@ mongoose
 app.use(express.json());
 app.use("/", mainRouter);
 
-app.post;
-
 app.listen(PORT);

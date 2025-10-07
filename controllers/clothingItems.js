@@ -94,9 +94,18 @@ const unlikeClothingItem = (req, res) => {
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
-    .then((item) => res.send({ message: "Item deleted", item }))
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(403)
+          .send({ message: "You do not have permission to delete this item" });
+      }
+      return ClothingItem.findByIdAndDelete(itemId).then(() =>
+        res.send({ message: "Item deleted" })
+      );
+    })
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
