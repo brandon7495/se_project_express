@@ -86,7 +86,7 @@ const signinUser = (req, res) => {
 
   User.findByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
       res.send({ token });
@@ -104,4 +104,45 @@ const signinUser = (req, res) => {
     });
 };
 
-module.exports = { createUser, getCurrentUser, signinUser };
+const updateCurrentUser = (req, res) => {
+  const { userId } = req.user;
+  const { name, avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .orFail()
+    .then((user) =>
+      res.send({
+        _id: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      })
+    )
+    .catch((error) => {
+      console.error(error);
+      if (error.name === "DocumentNotFoundError") {
+        return res
+          .status(notFound.status)
+          .send({ message: `User ${notFound.message}` });
+      }
+      if (error.name === "ValidationError") {
+        return res
+          .status(invalidUser.status)
+          .send({ message: `${invalidUser.message} Data` });
+      }
+      if (error.name === "CastError") {
+        return res
+          .status(invalidUser.status)
+          .send({ message: `${invalidUser.message} Id` });
+      }
+      return res
+        .status(serverError.status)
+        .send({ message: serverError.message });
+    });
+};
+
+module.exports = { createUser, getCurrentUser, signinUser, updateCurrentUser };
