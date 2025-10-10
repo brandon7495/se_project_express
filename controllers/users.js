@@ -34,7 +34,7 @@ const createUser = (req, res) => {
           }
           if (error.code === 11000) {
             return res
-              .status(invalidUser.status)
+              .status(409)
               .send({ message: "User with this email already exists" });
           }
           return res
@@ -83,6 +83,10 @@ const getCurrentUser = (req, res) => {
 
 const signinUser = (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send({ message: "Email and password are required" });
+  }
 
   User.findByCredentials(email, password)
     .then((user) => {

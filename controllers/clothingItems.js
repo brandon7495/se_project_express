@@ -20,7 +20,7 @@ const getClothingItems = (req, res) => {
 const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user.userId })
     .then((item) => res.status(created.status).send(item))
     .catch((error) => {
       console.error(error);
@@ -97,7 +97,7 @@ const deleteClothingItem = (req, res) => {
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
-      if (item.owner.toString() !== req.user._id) {
+      if (item.owner.toString() !== req.user.userId) {
         return res
           .status(403)
           .send({ message: "You do not have permission to delete this item" });
