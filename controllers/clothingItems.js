@@ -40,7 +40,7 @@ const likeClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndUpdate(
     itemId,
-    { $addToSet: { likes: req.user._id } },
+    { $addToSet: { likes: req.user.userId } },
     { new: true }
   )
     .orFail()
@@ -68,7 +68,7 @@ const unlikeClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndUpdate(
     itemId,
-    { $pull: { likes: req.user._id } },
+    { $pull: { likes: req.user.userId } },
     { new: true }
   )
     .orFail()
