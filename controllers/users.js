@@ -51,9 +51,9 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user;
+  const { _id } = req.user;
 
-  User.findById(userId)
+  User.findById(_id)
     .orFail()
     .then((user) =>
       res.send({
@@ -90,7 +90,7 @@ const signinUser = (req, res) => {
 
   User.findByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
       res.send({ token });
@@ -109,11 +109,11 @@ const signinUser = (req, res) => {
 };
 
 const updateCurrentUser = (req, res) => {
-  const { userId } = req.user;
+  const { _id } = req.user;
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
-    userId,
+    _id,
     { name, avatar },
     { new: true, runValidators: true }
   )

@@ -20,7 +20,7 @@ const getClothingItems = (req, res) => {
 const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user.userId })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(created.status).send(item))
     .catch((error) => {
       console.error(error);
@@ -40,7 +40,7 @@ const likeClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndUpdate(
     itemId,
-    { $addToSet: { likes: req.user.userId } },
+    { $addToSet: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
@@ -68,7 +68,7 @@ const unlikeClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndUpdate(
     itemId,
-    { $pull: { likes: req.user.userId } },
+    { $pull: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
@@ -97,7 +97,7 @@ const deleteClothingItem = (req, res) => {
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
-      if (item.owner.toString() !== req.user.userId) {
+      if (item.owner.toString() !== req.user._id) {
         return res
           .status(403)
           .send({ message: "You do not have permission to delete this item" });
