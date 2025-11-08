@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -5,10 +7,6 @@ const mainRouter = require("./routes/index");
 
 const app = express();
 const { PORT = 3001 } = process.env;
-
-req.user = {
-  _id: "64a7f4f2f1c2b9b1d5e8c123",
-};
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")

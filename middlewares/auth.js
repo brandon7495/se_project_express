@@ -13,7 +13,7 @@ const authorizeUser = (req, res, next) => {
     const payload = jwt.verify(token, JWT_SECRET);
 
     req.user = payload;
-    next();
+    return next();
   } catch (error) {
     return res.status(401).send({ message: "Unauthorized" });
   }
