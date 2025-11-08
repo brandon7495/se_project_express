@@ -8,17 +8,8 @@ const mainRouter = require("./routes/index");
 const app = express();
 const { PORT = 3001 } = process.env;
 
-function authorizeUser(req, res, next) {
-  req.user = {
-    _id: "5d8b8592978f8bd833ca8133",
-  };
-  console.log("Mock user ID set:", req.user._id);
-  next();
-}
-
 app.use(express.json());
 app.use(cors());
-app.use(authorizeUser);
 app.use("/", mainRouter);
 
 mongoose
