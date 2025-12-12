@@ -1,18 +1,45 @@
-const created = { status: 201 };
-const invalidUser = { status: 400, message: "Invalid User" };
-const invalidItem = { status: 400, message: "Invalid Item" };
-const invalidEmailOrPassword = {
-  status: 401,
-  message: "Invalid Email or Password",
-};
-const notFound = { status: 404, message: "Not Found" };
-const serverError = { status: 500, message: "Internal Server Error" };
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
+class BadRequestError extends CustomError {
+  constructor(message) {
+    super(message, 400);
+  }
+}
+
+class UnauthorizedError extends CustomError {
+  constructor(message) {
+    super(message, 401);
+  }
+}
+
+class ForbiddenError extends CustomError {
+  constructor(message) {
+    super(message, 403);
+  }
+}
+
+class NotFoundError extends CustomError {
+  constructor(message) {
+    super(message, 404);
+  }
+}
+
+class ConflictError extends CustomError {
+  constructor(message) {
+    super(message, 409);
+  }
+}
 
 module.exports = {
-  created,
-  invalidUser,
-  invalidItem,
-  invalidEmailOrPassword,
-  notFound,
-  serverError,
+  CustomError,
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  ConflictError,
 };
