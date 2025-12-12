@@ -1,9 +1,10 @@
+const express = require("express");
 const ClothingItem = require("../models/clothingItem");
 const {
   BadRequestError,
   ForbiddenError,
   NotFoundError,
-} = require("../utils/constants");
+} = require("../utils/errors");
 
 const getClothingItems = (req, res, next) => {
   ClothingItem.find({})
@@ -19,9 +20,8 @@ const createClothingItem = (req, res, next) => {
     .catch((error) => {
       if (error.name === "ValidationError") {
         return next(new BadRequestError("Invalid Item Data"));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 
@@ -41,9 +41,8 @@ const likeClothingItem = (req, res, next) => {
       }
       if (error.name === "CastError") {
         return next(new BadRequestError("Invalid Item Id"));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 
@@ -63,9 +62,8 @@ const unlikeClothingItem = (req, res, next) => {
       }
       if (error.name === "CastError") {
         return next(new BadRequestError("Invalid Item Id"));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 
@@ -90,9 +88,8 @@ const deleteClothingItem = (req, res, next) => {
       }
       if (error.name === "CastError") {
         return next(new BadRequestError("Invalid Item Id"));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 

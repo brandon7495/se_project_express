@@ -1,12 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const express = require("express");
 const User = require("../models/user");
 const {
   BadRequestError,
   UnauthorizedError,
   NotFoundError,
   ConflictError,
-} = require("../utils/constants");
+} = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
 const createUser = (req, res, next) => {
@@ -32,14 +33,11 @@ const createUser = (req, res, next) => {
             return next(
               new ConflictError("User with this email already exists")
             );
-          } else {
-            next(error);
           }
+          return next(error);
         });
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch((error) => next(error));
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -61,9 +59,8 @@ const getCurrentUser = (req, res, next) => {
       }
       if (error.name === "CastError") {
         return next(new BadRequestError("Invalid User Id"));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 
@@ -83,9 +80,8 @@ const signinUser = (req, res, next) => {
     .catch((error) => {
       if (error.name === "UnauthorizedError") {
         return next(new UnauthorizedError("Invalid Email or Password"));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 
@@ -116,9 +112,8 @@ const updateCurrentUser = (req, res, next) => {
       }
       if (error.name === "CastError") {
         return next(new BadRequestError(`Invalid User Id`));
-      } else {
-        next(error);
       }
+      return next(error);
     });
 };
 
