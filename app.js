@@ -14,15 +14,18 @@ const { PORT = 3001 } = process.env;
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
 
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 app.use(requestLogger);
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/", mainRouter);
-
-app.use(cors());
-app.use(express.json());
 
 app.use(errorLogger);
 
