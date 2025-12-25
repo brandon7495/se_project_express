@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { errors } = require("celebrate");
+require("dotenv").config();
 
 const mainRouter = require("./routes/index");
 
@@ -29,7 +30,7 @@ mongoose
   .then(() => {
     console.log("Connected to DB");
     app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
+      console.log(`Server is running on ${PORT}`);
     });
   })
   .catch(console.error);
