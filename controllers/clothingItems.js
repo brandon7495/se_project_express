@@ -1,4 +1,3 @@
-const express = require("express");
 const ClothingItem = require("../models/clothingItem");
 const {
   BadRequestError,

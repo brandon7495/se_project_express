@@ -1,12 +1,14 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 
+const {UnauthorizedError} = require("../utils/errors");
+
 const authorizeUser = (req, res, next) => {
   const { authorization } = req.headers;
 
   try {
     if (!authorization || !authorization.startsWith("Bearer ")) {
-      return res.status(401).send({ message: "Unauthorized" });
+      throw new UnauthorizedError("Authorization required");
     }
 
     const token = authorization.replace("Bearer ", "");
@@ -15,7 +17,13 @@ const authorizeUser = (req, res, next) => {
     req.user = payload;
     return next();
   } catch (error) {
-    return res.status(401).send({ message: "Unauthorized" });
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      throw new UnauthorizedError("Invalid or expired token");
+    }
+    return next(error);
   }
 };
 
